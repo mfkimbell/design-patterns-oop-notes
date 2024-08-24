@@ -65,25 +65,3 @@ When you write code that depends on an interface rather than a specific class, y
    ```
 
    Now, when you test `PaymentService`, you can use `MockBankService`, which doesn't actually move money around but lets you test how `PaymentService` works when a payment is "successful."
-
-2. **Isolating the Code Under Test**:
-   - By using interfaces, you ensure that when you test a class, you're only testing that class's logic, not the logic of its dependencies. This isolation is crucial for unit tests, which are meant to test small, self-contained pieces of functionality.
-
-   For example, in the case above, if you test `PaymentService` with `MockBankService`, you only focus on whether `PaymentService` behaves correctly when it calls the `transfer` method, without worrying about what the real `BankService` does behind the scenes.
-
-3. **Testing Various Scenarios Easily**:
-   - Using interfaces makes it easier to create different versions of a service for testing purposes. For instance, you could have another mock that simulates a failed transfer. This way, you can test how your class handles both success and failure cases without needing to change the actual code.
-
-   ```python
-   class FailingBankService(BankService):
-       def transfer(self, amount):
-           raise Exception("Transfer Failed")
-   ```
-
-   Now you can test how `PaymentService` handles a failed transfer, again without touching the real `BankService`.
-
-### Summary
-
-Interfaces allow you to replace real dependencies with controlled test versions (mocks) during testing. This makes it easier to:
-- Isolate the class you're testing from its dependencies.
-- Create predictable and controlled test scenarios.
