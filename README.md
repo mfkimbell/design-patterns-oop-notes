@@ -1,12 +1,39 @@
 # design-patterns-oop-notes
 
+# Notes for interviews
+* I have been learning about design patterns, but it's important to know WHEN to use them, if you use them willy nilly, you might just be increasing complexity without positive impact
+
+# repository pattern
+* Mediates between the domain and data mapping layers, acting like an **in memory collection** of domain objects
+
+  <img width="820" alt="Screenshot 2024-08-25 at 2 55 55 PM" src="https://github.com/user-attachments/assets/c4de6e47-9fec-43fc-9f63-6b8d1cac4bad">
+
+### First, what is an ORM?
+* map data objects (object relational mappers) to table and records in a relational dataabase.
+* you get to work with objects rather than database tables
+* **modularization and decoupling** (these words come up all the time, keep them in vocab)
+* examples: entity framework, dapper, etc...
+### Benefits
+* minimizes dupliate query logic
+* decouples your applicatin from persistence frameworks (for instance, entity framework)
+* **"architechture should be independent of framworks"**
+<img width="596" alt="Screenshot 2024-08-25 at 2 41 56 PM" src="https://github.com/user-attachments/assets/152fffcf-abce-4f4a-a616-f23f3c21a230">
+
+* (sometimes you HAVE to switch, every 2 years a new ORM comes out!)
+Here is what it should look like
+
+<img width="206" alt="Screenshot 2024-08-25 at 2 32 34 PM" src="https://github.com/user-attachments/assets/4f697e83-a287-434a-8d56-4d6aef685543">
+
+### Unit of work
+* in the context of entity framework, DbContext is the unit of work
+* it keeps track of the changes to the database objects and can Save() the changes to the datbase
+* Here is an example, we could call Complete(), Save() instead
+<img width="502" alt="Screenshot 2024-08-25 at 3 04 46 PM" src="https://github.com/user-attachments/assets/795287f6-95b4-45a6-b3a3-1e2a7a86048a">
 
 
-# READ DESIGN PATTERN GURU
-
-### repository pattern
--relevant
 ### how it related to graphQL 
+
+# CQRS (Command Query Resposibility Segregation)
 
 # DRY (don't repeat yourself)
 
