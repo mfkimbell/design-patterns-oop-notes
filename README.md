@@ -1,5 +1,13 @@
 # design-patterns-oop-notes
 
+
+
+# READ DESIGN PATTERN GURU
+
+### repository pattern
+-relevant
+### how it related to graphQL 
+
 # DRY (don't repeat yourself)
 
 # KISS (keep it simple stupid)
@@ -19,6 +27,8 @@
 # abstrqction
 
 # encapsulation
+
+
 
 # interfaces
 - help with testing code and writing unit tests
@@ -65,3 +75,5 @@ When you write code that depends on an interface rather than a specific class, y
    ```
 
    Now, when you test `PaymentService`, you can use `MockBankService`, which doesn't actually move money around but lets you test how `PaymentService` works when a payment is "successful."
+
+# class types, static, protecged etc...
