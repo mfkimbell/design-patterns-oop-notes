@@ -35,6 +35,26 @@ Here is what it should look like
 
 # CQRS (Command Query Resposibility Segregation)
 
+<img width="1253" alt="Screenshot 2024-08-26 at 4 16 02 PM" src="https://github.com/user-attachments/assets/c0679ad7-c6f0-4b69-bf5d-cee94a6f4c65">
+
+* a method should either read or write, but never both
+* **Queries** are for retrieving information and **Commands** are for changing or adding information
+* "dequeue" is a good example of a violation, every time you take something off the queue, you both return it and alter the original queue. You would need to use a command and a query to achieve the same result. 
+### Why is this beneficial
+* Cloud-native applications benefit from event-driven architectures where services communicate asynchronously through events. CQRS supports this paradigm by allowing event sourcing for write operations and efficient query models for read operations
+* with queries not having side effects we can retry without complications
+* separation of concerns
+* helps join data from multiple different microservices (modularization)
+* better for systems that want to execute commands in a queue
+* you can scale the read and writes separately 
+### When is it NOT beneficial
+* when you are altering data and need it back in the same format every time
+* when the other pros aren't relevant
+
+Here are some things that CQRS can build into:
+
+<img width="1262" alt="Screenshot 2024-08-26 at 4 25 31 PM" src="https://github.com/user-attachments/assets/5087815a-a72a-416c-9a97-e9dd3d8237af">
+
 # DRY (don't repeat yourself)
 
 # KISS (keep it simple stupid)
