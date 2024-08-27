@@ -2,7 +2,8 @@
 
 # Notes for interviews
 * I have been learning about design patterns, but it's important to know WHEN to use them, if you use them willy nilly, you might just be increasing complexity without positive impact
-
+* i feel like in general, as projects become larger in scale design patterns become a lot more worth it
+  
 # repository pattern
 * Mediates between the domain and data mapping layers, acting like an **in memory collection** of domain objects
 
@@ -55,12 +56,31 @@ Here are some things that CQRS can build into:
 
 <img width="1262" alt="Screenshot 2024-08-26 at 4 25 31 PM" src="https://github.com/user-attachments/assets/5087815a-a72a-416c-9a97-e9dd3d8237af">
 
-# DRY (don't repeat yourself)
-
-# KISS (keep it simple stupid)
-
 # Singleton
+* useful when you need a single instance of a class, such as a logger, or a database connection pool
+* need to be careful with concureency (race conditions)
+* here's a good race condition exmaple, they both grab the starting amount, BEFORE thread1 has time to update the new total
+```python
+public class Main {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000);
 
+        // Simulate multiple deposits happening concurrently
+        Thread thread1 = new Thread(() -> {
+            account.deposit(100);
+            System.out.println("Thread 1: New balance after deposit: " + account.getBalance());
+        });
+
+        Thread thread2 = new Thread(() -> {
+            account.deposit(200);
+            System.out.println("Thread 2: New balance after deposit: " + account.getBalance());
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
 # Factory
 
 # builder
