@@ -44,7 +44,8 @@ Here is what it should look like
 ### Why is this beneficial
 * Cloud-native applications benefit from event-driven architectures where services communicate asynchronously through events. CQRS supports this paradigm by allowing event sourcing for write operations and efficient query models for read operations
 * with queries not having side effects we can retry without complications
-* separation of concerns
+### separation of concerns
+* our application now has completely separate paths for queries and commands, so they can be scaled separately
 * helps join data from multiple different microservices (modularization)
 * better for systems that want to execute commands in a queue
 * you can scale the read and writes separately 
