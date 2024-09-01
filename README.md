@@ -281,10 +281,6 @@ When you write code that depends on an interface rather than a specific class, y
 
 <img width="461" alt="Screenshot 2024-09-01 at 12 19 42 PM" src="https://github.com/user-attachments/assets/4a4e7ff2-89b0-4a0b-b33a-37270d8e9231">
 
-
-<img width="1176" alt="Screenshot 2024-09-01 at 12 14 35 PM" src="https://github.com/user-attachments/assets/61f0317e-dc25-4ad0-8f3e-6a5271763c66">
-
-
 <img width="1064" alt="Screenshot 2024-09-01 at 12 00 32 PM" src="https://github.com/user-attachments/assets/0b2f0acc-885d-43a1-92ee-df35ff896e02">
 
 <img width="781" alt="Screenshot 2024-09-01 at 12 02 04 PM" src="https://github.com/user-attachments/assets/1468d280-8b48-420e-8a17-ce35b838f9bf">
@@ -300,5 +296,371 @@ When you write code that depends on an interface rather than a specific class, y
 <img width="776" alt="Screenshot 2024-09-01 at 12 25 42 PM" src="https://github.com/user-attachments/assets/49d39411-27fd-41eb-ae64-9bd5e323f7d0">
 
 # Observer pattern
+### pub/sub pattern
+
+* one to many relationship with objects
+* When the state of one object (the subject) changes, all of its dependents (called observers) are automatically notified and updated
+* The Observer Pattern is useful in scenarios where you need to maintain consistency across related objects or want to allow multiple components to react to changes in another component's state.
+
+# Facade pattern
+* The Facade Pattern is a structural design pattern that provides a simplified interface to a complex subsystem. It hides the complexities of the subsystem by exposing a single, unified interface, making the subsystem easier to use and understand for the client.
+* Many libraries have hidden logic the the user is unaware of
+<img width="522" alt="Screenshot 2024-09-01 at 4 00 08 PM" src="https://github.com/user-attachments/assets/41ea2e92-0365-40ca-9a74-9793e77cc65f">
+
+### SAM CLI for Cloudformation YAML is a good example, makes writing code a lot easier
+
+# Proxy pattern
+<img width="991" alt="Screenshot 2024-09-01 at 4 04 16 PM" src="https://github.com/user-attachments/assets/81020854-8c72-44ae-a26f-436bf7ece83b">
+
+Purpose of the Proxy Pattern
+The Proxy Pattern is used when you want to provide controlled access or add extra functionality to an object, such as:
+
+* Lazy Initialization: Delaying the creation or loading of a resource-intensive object until it is actually needed.
+* Access Control: Controlling access to the original object to ensure that only authorized clients can access certain methods or data.
+* Remote Proxy: Providing a local representative for an object in a different address space (e.g., making a remote procedure call).
+* Logging or Caching: Intercepting calls to the original object to log operations, cache results, or perform other pre-processing or post-processing tasks.
+```csharp
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Create a proxy for the image
+        IImage image = new ImageProxy("example.jpg");
+
+        // Image is loaded only when Display is called
+        Console.WriteLine("First call to Display:");
+        image.Display(); // Output: Loading image: example.jpg from disk...
+                         //         Displaying image: example.jpg
+
+        // Image is already loaded, so no need to load again
+        Console.WriteLine("\nSecond call to Display:");
+        image.Display(); // Output: Displaying image: example.jpg
+    }
+}
+```
+# Prototype pattern
+* The Prototype Pattern is useful in situations where creating new instances of a class is expensive, complex, or requires significant resources. By cloning an existing object (a prototype), you can quickly produce new objects without going through the full creation process.
+*  Use the Prototype pattern when your code shouldn’t depend on the concrete classes of objects that you need to copy.
+*  This happens a lot when your code works with objects passed to you from 3rd-party code via some interface. The concrete classes of these objects are unknown, and you couldn’t depend on them even if you wanted to.
+* allows an object to create a deep copy of itself (points to different data)
+* The Prototype Pattern is about delegating object creation to the objects themselves. Instead of relying on a factory or a constructor, objects themselves define how they should be cloned.
+* There’s a problem with directly cloning objects: you need to know the object's exact class to create a duplicate. This creates a dependency on that specific class in your code, which can make it less flexible.
+* Also, sometimes you only know the interface an object uses, not its actual class. For example, a method might accept any object that implements a particular interface, but you won't know the concrete class of those objects.
+* The Prototype pattern delegates the cloning process to the actual objects that are being cloned. The pattern declares a common interface for all objects that support cloning. This interface lets you `clone` an object without coupling your code to the class of that object. Usually, such an interface contains just a single `clone` method.
+* An object that supports cloning is called a prototype.
+* When your objects have dozens of fields and hundreds of possible configurations, cloning them might serve as an alternative to subclassing.
+
+``` csharp
+public class Main {
+    public static void main(String[] args) {
+        // Original shape with a base configuration
+        Shape originalShape = new Shape("Circle", 10, 20, "Red");
+        originalShape.draw(); // Output: Drawing Circle at position (10, 20) with color Red
+
+        // Clone the shape and modify the configuration
+        Shape clonedShape1 = (Shape) originalShape.clone();
+        clonedShape1.setPosition(30, 40); // Change position of the cloned shape
+        clonedShape1.setColor("Blue");    // Change color of the cloned shape
+        clonedShape1.draw();              // Output: Drawing Circle at position (30, 40) with color Blue
+
+        // Clone another shape and modify the configuration differently
+        Shape clonedShape2 = (Shape) originalShape.clone();
+        clonedShape2.setPosition(50, 60); // Change position of another cloned shape
+        clonedShape2.setColor("Green");   // Change color of another cloned shape
+        clonedShape2.draw();              // Output: Drawing Circle at position (50, 60) with color Green
+    }
+}
+```
+
+# Iterator pattern
+* Benefit: The traversal logic is encapsulated in the iterator, so the client code does not need to understand how the collection is internally structured.
+* The Iterator Pattern is a behavioral design pattern that provides a way to access the elements of a collection (such as a list, array, or tree) sequentially without exposing the underlying representation of the collection. 
+* `for loop` is an example this
+<img width="1089" alt="Screenshot 2024-09-01 at 4 24 58 PM" src="https://github.com/user-attachments/assets/5f228c1c-a15e-4f3f-bcd3-197d0ce3e933">
+
+```java
+// Concrete Iterator class
+public class BookIterator implements Iterator<Book> {
+    private BookCollection collection;
+    private int index = 0; // Current position in the collection
+
+    public BookIterator(BookCollection collection) {
+        this.collection = collection;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index < collection.size(); // Checks if there are more elements
+    }
+
+    @Override
+    public Book next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more books available.");
+        }
+        return collection.getBookAt(index++); // Returns the next book and moves the index forward
+    }
+}
+```
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        // Create a collection of books
+        BookCollection bookCollection = new BookCollection();
+        bookCollection.addBook(new Book("1984", "George Orwell"));
+        bookCollection.addBook(new Book("To Kill a Mockingbird", "Harper Lee"));
+        bookCollection.addBook(new Book("The Great Gatsby", "F. Scott Fitzgerald"));
+
+        // Create an iterator for the book collection
+        Iterator<Book> iterator = bookCollection.createIterator();
+
+        // Traverse the collection using the iterator
+        while (iterator.hasNext()) {
+            Book book = iterator.next();
+            System.out.println(book);
+        }
+    }
+```
+}
+# Mediator
+When to Use the Mediator Pattern:
+* When a system has many objects that interact with each other, leading to a complex web of dependencies.
+* When you want to encapsulate and centralize control logic for how objects interact.
+* When you want to promote loose coupling and make the system easier to understand and modify.
+* The Mediator Pattern is a behavioral design pattern that facilitates communication between multiple objects by centralizing their interactions through a single mediator object. This pattern helps to reduce the dependencies between the communicating objects, making the system easier to understand, maintain, and extend.
+### A popular metaphor is a airport, the planes don't communciate with each other to decide who is gonna get the runway next, they get info from the control tower
+<img width="1002" alt="Screenshot 2024-09-01 at 4 41 00 PM" src="https://github.com/user-attachments/assets/55a77a7d-57af-4f02-9d0d-3e26d2d0a39f">
+* Imagine a simple chat room where multiple users can send messages to each other. Instead of each user having a direct reference to every other user (which would be a complex web of dependencies), the chat room acts as a mediator to handle the communication between users.
+
+```java
+// Mediator interface
+public interface IChatRoomMediator
+{
+    void ShowMessage(User user, string message);
+}
+```
+```java
+using System;
+
+// Concrete mediator class
+public class ChatRoom : IChatRoomMediator
+{
+    public void ShowMessage(User user, string message)
+    {
+        // Display the message with the user's information
+        Console.WriteLine($"{DateTime.Now.ToShortTimeString()} [{user.Name}]: {message}");
+    }
+}
+```
+* The collegue class (user) instantiates the mediator
+```java
+// Colleague class
+public class User
+{
+    private string _name;
+    private IChatRoomMediator _chatRoom;
+
+    public User(string name, IChatRoomMediator chatRoom)
+    {
+        _name = name;
+        _chatRoom = chatRoom;
+    }
+
+    public string Name => _name;
+
+    public void SendMessage(string message)
+    {
+        _chatRoom.ShowMessage(this, message);
+    }
+}
+```
+```java
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Create a mediator
+        IChatRoomMediator chatRoom = new ChatRoom();
+
+        // Create users and register them with the mediator
+        User user1 = new User("Alice", chatRoom);
+        User user2 = new User("Bob", chatRoom);
+
+        // Users send messages via the mediator
+        user1.SendMessage("Hello, Bob!");
+        user2.SendMessage("Hey, Alice! How are you?");
+    }
+}
+```
+```
+
+The Mediator Pattern is a behavioral design pattern that facilitates communication between multiple objects by centralizing their interactions through a single mediator object. This pattern helps to reduce the dependencies between the communicating objects, making the system easier to understand, maintain, and extend.
+
+Purpose of the Mediator Pattern:
+Reduce Direct Dependencies:
+
+Objects communicate through the mediator instead of directly with each other, which reduces the number of dependencies between them. This makes the system more loosely coupled and easier to manage.
+Centralize Control:
+
+The mediator centralizes the logic that governs how different components interact, improving code organization and reducing the complexity of each individual object.
+Simplify Object Interactions:
+
+Instead of having a web of interactions between objects, all communication is channeled through the mediator. This simplifies the relationships and dependencies between the objects.
+When to Use the Mediator Pattern:
+When a system has many objects that interact with each other, leading to a complex web of dependencies.
+When you want to encapsulate and centralize control logic for how objects interact.
+When you want to promote loose coupling and make the system easier to understand and modify.
+Simple Example of the Mediator Pattern in C#: A Chat Room
+Imagine a simple chat room where multiple users can send messages to each other. Instead of each user having a direct reference to every other user (which would be a complex web of dependencies), the chat room acts as a mediator to handle the communication between users.
+
+Step 1: Define the Mediator Interface (IChatRoomMediator)
+csharp
+Copy code
+// Mediator interface
+public interface IChatRoomMediator
+{
+    void ShowMessage(User user, string message);
+}
+Step 2: Implement the Concrete Mediator (ChatRoom)
+csharp
+Copy code
+using System;
+
+// Concrete mediator class
+public class ChatRoom : IChatRoomMediator
+{
+    public void ShowMessage(User user, string message)
+    {
+        // Display the message with the user's information
+        Console.WriteLine($"{DateTime.Now.ToShortTimeString()} [{user.Name}]: {message}");
+    }
+}
+Step 3: Define the Colleague Class (User)
+csharp
+Copy code
+// Colleague class
+public class User
+{
+    private string _name;
+    private IChatRoomMediator _chatRoom;
+
+    public User(string name, IChatRoomMediator chatRoom)
+    {
+        _name = name;
+        _chatRoom = chatRoom;
+    }
+
+    public string Name => _name;
+
+    public void SendMessage(string message)
+    {
+        _chatRoom.ShowMessage(this, message);
+    }
+}
+Step 4: Use the Mediator in Client Code
+csharp
+Copy code
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Create a mediator
+        IChatRoomMediator chatRoom = new ChatRoom();
+
+        // Create users and register them with the mediator
+        User user1 = new User("Alice", chatRoom);
+        User user2 = new User("Bob", chatRoom);
+
+        // Users send messages via the mediator
+        user1.SendMessage("Hello, Bob!");
+        user2.SendMessage("Hey, Alice! How are you?");
+    }
+}
+```
+```makefile
+12:00 PM [Alice]: Hello, Bob!
+12:00 PM [Bob]: Hey, Alice! How are you?
+```
 
 # Composition vs. Inheritance
+* Composition is a fundamental concept in object-oriented programming (OOP) that refers to building complex objects by combining or "composing" other objects. Rather than inheriting behavior from a parent class (as with inheritance), composition involves creating a class that contains references to other objects, allowing it to reuse and delegate behavior
+* Composition is a design principle where a class is made up of one or more objects from other classes. It is often described as a "has-a" relationship.
+* For example, a Car class might be composed of several parts like an Engine, Wheel, and Transmission. The Car "has a" Engine, "has a" Wheel, etc.
+* In composition, an object is created by including other objects inside it as its members. These member objects are often passed in through the constructor or are set up at runtime, allowing for more flexibility.
+  
+* Reusability: Allows classes to reuse code by composing objects rather than inheriting from a base class.
+* Flexibility: Composed objects can change behavior at runtime by changing their member objects.
+* Encapsulation: Keeps objects encapsulated within the class, promoting modular design.
+
+### Inheritance:
+
+* Is-a Relationship: Inheritance creates a relationship between classes where one class (child) is a subtype of another (parent). For example, a Dog class might inherit from an Animal class because a dog "is an" animal.
+* Tightly Coupled: Inheritance creates a strong coupling between the child and parent classes. Changes to the parent class can affect all child classes.
+* Reuse by Extending: The child class inherits fields and methods from the parent class and can override or extend them.
+* Less Flexible: Because inheritance is static, the relationship between parent and child classes is fixed at compile time. It is difficult to change or extend this relationship dynamically.
+
+<img width="600" alt="Screenshot 2024-09-01 at 4 48 00 PM" src="https://github.com/user-attachments/assets/a852f2a9-1905-4c38-8de7-e503a5b919a6">
+<img width="947" alt="Screenshot 2024-09-01 at 4 48 24 PM" src="https://github.com/user-attachments/assets/4033ac57-a9c0-4a2b-8e6e-a91b9c030267">
+
+
+### When to Use Composition Over Inheritance:
+
+### Prefer Composition When:
+
+* You want to create a flexible and dynamic relationship between objects.
+* You want to avoid tight coupling between classes.
+* You need to change behavior at runtime by swapping out member objects.
+* You need to use multiple behaviors in a single class that cannot be easily represented in a single inheritance hierarchy.
+  
+### Use Inheritance When:
+
+* There is a clear "is-a" relationship, and the child class should inherit and extend the behavior of the parent class.
+* You want to use polymorphism to enable substituting objects of a derived class for objects of the base class.
+* You need to provide default behavior that can be overridden by subclasses.
+
+```java
+// Composition example: Car "has an" Engine
+class Engine {
+    public void start() {
+        System.out.println("Engine started");
+    }
+}
+
+class Car {
+    private Engine engine;
+
+    public Car(Engine engine) {
+        this.engine = engine; // Car has an Engine
+    }
+
+    public void startCar() {
+        engine.start(); // Delegates to the Engine's start method
+    }
+}
+
+// Usage
+Engine engine = new Engine();
+Car car = new Car(engine);
+car.startCar(); // Output: Engine started
+```
+
+```java
+// Inheritance example: Dog "is an" Animal
+class Animal {
+    public void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+
+class Dog extends Animal {
+    public void bark() {
+        System.out.println("Dog is barking");
+    }
+}
+
+// Usage
+Dog dog = new Dog();
+dog.eat();  // Inherited from Animal
+dog.bark(); // Specific to Dog
+```
