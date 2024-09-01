@@ -57,6 +57,10 @@ Here are some things that CQRS can build into:
 
 <img width="1262" alt="Screenshot 2024-08-26 at 4 25 31 PM" src="https://github.com/user-attachments/assets/5087815a-a72a-416c-9a97-e9dd3d8237af">
 
+CQRS is simlilar to GraphQL in that they separate the read and writes logic.
+- again this is helpful for a lot of reasons, but one that sticks in my mind is that with less side effects you can have retries without causing problems.
+
+
 # Singleton
 * useful when you need a single instance of a class, such as a logger, or a database connection pool
 * need to be careful with concureency (race conditions)
@@ -84,21 +88,144 @@ public class Main {
 ```
 # Factory
 
-# builder
+<img width="384" alt="Screenshot 2024-09-01 at 10 40 37 AM" src="https://github.com/user-attachments/assets/21b20819-ae48-404f-bb9b-d20dc87f3a21">
 
-# polymorphism 
+https://www.youtube.com/watch?v=ub0DXaeV6hA
 
-### overloading
-
-### overwriting
-
-# abstrqction
-
-# encapsulation
+<img width="1020" alt="Screenshot 2024-09-01 at 10 32 02 AM" src="https://github.com/user-attachments/assets/2ba37314-2049-4e92-8a58-3c7b3021b8f0">
 
 
+<img width="1164" alt="Screenshot 2024-09-01 at 10 36 49 AM" src="https://github.com/user-attachments/assets/0b575503-58a0-4847-b913-b1126dae6774">
 
-# interfaces
+- I love this example, it's so we can generate random enemies AT RUNTIME since it can generate any of the classes (as long as they share a superclass)
+
+# Builder
+
+<img width="667" alt="Screenshot 2024-09-01 at 11 10 57 AM" src="https://github.com/user-attachments/assets/fe3892a7-f360-4e45-9c5d-733036413011">
+
+<img width="656" alt="Screenshot 2024-09-01 at 11 10 32 AM" src="https://github.com/user-attachments/assets/604a8420-b95c-458b-919e-bda88eefa706">
+
+- the functions are the same but the implementation is different, one builds the car while the other builds the manual. This is a weird example though, it's more relevant to refer to the builder pattern as something that builds a bunch of different objects that implement the interface (rather than building a sub-class for each specific object:
+
+<img width="682" alt="Screenshot 2024-09-01 at 11 12 28 AM" src="https://github.com/user-attachments/assets/48973860-6386-49e7-b4b3-b4111d3a4e1f">
+
+# Polymorphism 
+
+Polymorphism is a core concept in object-oriented programming (OOP) that allows objects of different types to be treated as objects of a common super type. It enables a single function, method, or operator to perform different tasks based on the context or the input.
+
+There are two main types of polymorphism in OOP:
+
+**Compile-time Polymorphism** (also known as Static Polymorphism)
+**Runtime Polymorphism** (also known as Dynamic Polymorphism)
+
+### Overloading
+* Compile time polymorhpism
+* same function name, different parameters
+
+
+### Overwriting
+
+* Overriding is a form of runtime polymorphism where a derived class provides a specific implementation of a method that is already defined in its base (parent) class.
+* The method in the base class is marked as virtual, abstract, or override, allowing the derived class to provide its implementation.
+
+# Virtual Tables (V-tables): virtual, abstract, or override
+
+Why Do You Need virtual, abstract, or override?
+
+A vtable (virtual table) is a mechanism used in languages like C++ and C# to support dynamic method dispatch (runtime polymorphism). It is essentially a table of function pointers, where each entry points to the implementation of a virtual method for a given class.
+
+Each class that has virtual methods (methods marked with virtual, abstract, or override) has its own vtable.
+Instances of a class contain a hidden pointer to the vtable for their class. This pointer is used to look up method implementations at runtime.
+
+### Virtual:
+
+* Purpose: The virtual keyword is used to indicate that a method in a base class can be overridden in any derived class. It allows a method to be polymorphic, meaning that the exact method that gets called is determined at runtime based on the object's type.
+* Usage: When you mark a method as virtual, it tells the compiler to include an entry for this method in the vtable of the class. If a derived class overrides this method, the vtable entry is updated to point to the overridden method.
+Example:
+```csharp
+public class Animal
+{
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Some generic animal sound");
+    }
+}
+```
+
+### Abstract:
+
+* Purpose: The abstract keyword is used to define a method that must be implemented by any non-abstract derived class. An abstract method has no implementation in the base class; it serves as a template or contract that derived classes must fulfill.
+* Usage: Abstract methods are inherently virtual because they require derived classes to provide an implementation. However, abstract methods don't provide their own implementation; they just define the method signature.
+Example:
+```csharp
+public abstract class Animal
+{
+    public abstract void MakeSound(); // No implementation here
+}
+```
+
+
+### Override:
+
+* Purpose: The override keyword is used in a derived class to provide a new implementation for a method that is declared as virtual or abstract in its base class.
+* Usage: It tells the compiler that the method is meant to override a base class method, ensuring that the method signatures match. The overridden method will replace the base class method's entry in the vtable.
+Example:
+```csharp
+public class Dog : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Bark");
+    }
+}
+```
+
+# Abstraction
+
+* Abstraction is the process of hiding the complex implementation details of a system and showing only the essential features or functionalities to the user. It focuses on exposing only the relevant parts of an object or class while keeping the rest hidden.
+
+* ***Interfaces and Abstract Classes:*** In OOP, abstraction is often achieved using interfaces and abstract classes. These allow you to define a contract or blueprint that classes must follow without specifying the implementation details.
+
+
+
+# Encapsulation
+
+* Encapsulation is the bundling of data (variables) and methods that operate on the data (functions) into a single unit or class. It restricts direct access to some of the object's components and prevents the accidental modification of data.
+* ***Private and Protected Access Modifiers and Methods: Encapsulation protects the internal state of an object by hiding its data members from outside access. This is typically achieved by declaring data members as private or protected and providing public methods (getters and setters) to access or modify them.
+
+```java
+public class BankAccount
+{
+    private decimal balance; // Private field to hold balance
+
+    public decimal GetBalance() // Public getter method to access balance
+    {
+        return balance;
+    }
+
+    public void Deposit(decimal amount) // Public method to deposit money
+    {
+        if (amount > 0)
+        {
+            balance += amount;
+        }
+    }
+
+    public void Withdraw(decimal amount) // Public method to withdraw money
+    {
+        if (amount > 0 && amount <= balance)
+        {
+            balance -= amount;
+        }
+    }
+}
+```
+
+* The balance field is encapsulated within the BankAccount class and marked as private, preventing direct access from outside the class.
+Methods like Deposit and Withdraw provide controlled ways to interact with the balance, ensuring that it cannot be arbitrarily modified.
+
+
+# Interfaces
 - help with testing code and writing unit tests
 - ex: our payment service relies on a banking servive we import, we can make a
 Let me break it down a bit more:
@@ -145,3 +272,33 @@ When you write code that depends on an interface rather than a specific class, y
    Now, when you test `PaymentService`, you can use `MockBankService`, which doesn't actually move money around but lets you test how `PaymentService` works when a payment is "successful."
 
 # class types, static, protecged etc...
+
+
+# Adapter pattern
+-basically you use the adapater object instead of the other object, so that you can write custom code to make it work with noncompatible types.
+-aka putting a circle in a square hole (instead of a square)
+-our adapter object acts like an api that implements the intended client interface but with the updated functionality (new payment processor)
+
+<img width="461" alt="Screenshot 2024-09-01 at 12 19 42 PM" src="https://github.com/user-attachments/assets/4a4e7ff2-89b0-4a0b-b33a-37270d8e9231">
+
+
+<img width="1176" alt="Screenshot 2024-09-01 at 12 14 35 PM" src="https://github.com/user-attachments/assets/61f0317e-dc25-4ad0-8f3e-6a5271763c66">
+
+
+<img width="1064" alt="Screenshot 2024-09-01 at 12 00 32 PM" src="https://github.com/user-attachments/assets/0b2f0acc-885d-43a1-92ee-df35ff896e02">
+
+<img width="781" alt="Screenshot 2024-09-01 at 12 02 04 PM" src="https://github.com/user-attachments/assets/1468d280-8b48-420e-8a17-ce35b838f9bf">
+
+<img width="957" alt="Screenshot 2024-09-01 at 12 03 14 PM" src="https://github.com/user-attachments/assets/5d7e9e25-7c0b-43e8-a858-919378fd0370">
+
+<img width="1115" alt="Screenshot 2024-09-01 at 12 04 37 PM" src="https://github.com/user-attachments/assets/6cd94011-0605-44bc-9066-a03a23c8f2d2">
+
+<img width="1138" alt="Screenshot 2024-09-01 at 12 05 25 PM" src="https://github.com/user-attachments/assets/c32ab4c1-5a5b-46e3-87d1-fa1b5bd95314">
+
+<img width="767" alt="Screenshot 2024-09-01 at 12 21 53 PM" src="https://github.com/user-attachments/assets/487c8210-7c31-43c0-96c1-0960ddba3708">
+
+<img width="776" alt="Screenshot 2024-09-01 at 12 25 42 PM" src="https://github.com/user-attachments/assets/49d39411-27fd-41eb-ae64-9bd5e323f7d0">
+
+# Observer pattern
+
+# Composition vs. Inheritance
