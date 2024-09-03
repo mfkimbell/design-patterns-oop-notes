@@ -584,6 +584,12 @@ public class Program
 ```
 
 # Composition vs. Inheritance
+
+<img width="626" alt="Screenshot 2024-09-01 at 5 00 46 PM" src="https://github.com/user-attachments/assets/58384ea0-a336-400c-b28c-b38500325585">
+
+* GOLANG encourages composition over inheritance
+* <img width="761" alt="Screenshot 2024-09-01 at 4 55 21 PM" src="https://github.com/user-attachments/assets/09ecba6a-73dc-4a2f-9ac6-ad59d81413b5">
+
 * Composition is a fundamental concept in object-oriented programming (OOP) that refers to building complex objects by combining or "composing" other objects. Rather than inheriting behavior from a parent class (as with inheritance), composition involves creating a class that contains references to other objects, allowing it to reuse and delegate behavior
 * Composition is a design principle where a class is made up of one or more objects from other classes. It is often described as a "has-a" relationship.
 * For example, a Car class might be composed of several parts like an Engine, Wheel, and Transmission. The Car "has a" Engine, "has a" Wheel, etc.
@@ -592,6 +598,11 @@ public class Program
 * Reusability: Allows classes to reuse code by composing objects rather than inheriting from a base class.
 * Flexibility: Composed objects can change behavior at runtime by changing their member objects.
 * Encapsulation: Keeps objects encapsulated within the class, promoting modular design.
+
+* This is a good example where inheritance breaks down, line and circle add problems for subclasses, lines don't have width, so we have fields in line class that aren't used. A line might have an angle property as well, and we don't want it in the base class since it wont' be used by other shapes
+* We want to avoid these complex inheritance chains for somewhat related classes, while still reusing code
+<img width="756" alt="Screenshot 2024-09-01 at 4 56 59 PM" src="https://github.com/user-attachments/assets/3dac5596-e3c6-4c8a-8d24-ca9a7f9d4e9d">
+<img width="656" alt="Screenshot 2024-09-01 at 5 00 14 PM" src="https://github.com/user-attachments/assets/f96212c3-7733-4740-b596-ca9285a5bb80">
 
 ### Inheritance:
 
