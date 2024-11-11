@@ -66,6 +66,164 @@ Here are some things that CQRS can build into:
 CQRS is simlilar to GraphQL in that they separate the read and writes logic.
 - again this is helpful for a lot of reasons, but one that sticks in my mind is that with less side effects you can have retries without causing problems.
 
+# Strategy Pattern **BEHAVIORAL**
+* The Strategy Pattern is a behavioral design pattern that allows you to define a family of algorithms or behaviors, put each of them in a separate class, and make their objects interchangeable.
+<img width="883" alt="Screenshot 2024-11-11 at 3 26 08 PM" src="https://github.com/user-attachments/assets/308ce014-b065-416d-87dc-08c96f65d130">
+* we don't want to copy "sliding lock" logic for every type of door that uses a sliding lock
+* we want to reuse the logic and pass it into those classes
+#### without lambdas
+```java
+// Strategy Interface
+interface SortingStrategy {
+    void sort(int[] numbers);
+}
+
+// Concrete Strategies
+class BubbleSort implements SortingStrategy {
+    @Override
+    public void sort(int[] numbers) {
+        System.out.println("Sorting using Bubble Sort");
+    }
+}
+
+class QuickSort implements SortingStrategy {
+    @Override
+    public void sort(int[] numbers) {
+        System.out.println("Sorting using Quick Sort");
+    }
+}
+
+// Context
+class SortContext {
+    private SortingStrategy strategy;
+
+    public void setStrategy(SortingStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void executeStrategy(int[] numbers) {
+        strategy.sort(numbers);
+    }
+}
+
+// Usage
+public class StrategyPatternClasses {
+    public static void main(String[] args) {
+        SortContext context = new SortContext();
+        int[] numbers = {5, 3, 8, 1};
+
+        context.setStrategy(new BubbleSort());
+        context.executeStrategy(numbers);
+
+        context.setStrategy(new QuickSort());
+        context.executeStrategy(numbers);
+    }
+}
+```
+#### with lambdas
+```java
+import java.util.function.Consumer;
+
+// Context Class
+class SortContext {
+    private Consumer<int[]> strategy;
+
+    // Set the sorting strategy using a lambda
+    public void setStrategy(Consumer<int[]> strategy) {
+        this.strategy = strategy;
+    }
+
+    // Execute the strategy (sort the array)
+    public void executeStrategy(int[] numbers) {
+        if (strategy == null) {
+            throw new IllegalStateException("Strategy must be set before execution.");
+        }
+        strategy.accept(numbers);
+    }
+}
+
+// Utility Class to Store Strategies
+class SortingStrategies {
+    // Reusable Bubble Sort Lambda
+    public static final Consumer<int[]> BUBBLE_SORT = (arr) -> {
+        System.out.println("Sorting using Bubble Sort");
+        // Sorting logic here
+    };
+
+    // Reusable Quick Sort Lambda
+    public static final Consumer<int[]> QUICK_SORT = (arr) -> {
+        System.out.println("Sorting using Quick Sort");
+        // Sorting logic here
+    };
+}
+
+// Main Class
+public class StrategyPatternLambdaRefactored {
+    public static void main(String[] args) {
+        SortContext context = new SortContext();
+        int[] numbers = {5, 3, 8, 1};
+
+        // Set Bubble Sort strategy using reusable lambda and execute
+        context.setStrategy(SortingStrategies.BUBBLE_SORT);
+        context.executeStrategy(numbers.clone());
+
+        // Set Quick Sort strategy using reusable lambda and execute
+        context.setStrategy(SortingStrategies.QUICK_SORT);
+        context.executeStrategy(numbers.clone());
+    }
+}
+```
+
+# State Pattern (BEHAVIORAL)
+* basically a state machine
+<img width="619" alt="Screenshot 2024-11-11 at 4 07 56 PM" src="https://github.com/user-attachments/assets/60404c5e-b136-4b2f-b9f1-ebdf6d8e778c">
+* we take the pictured logic, and break each state into a class that controls how the state changes
+* break down complicated logic (more complicated than traffic lights)
+*
+* <img width="458" alt="Screenshot 2024-11-11 at 4 11 44 PM" src="https://github.com/user-attachments/assets/8ae61421-e1bc-4163-9c35-b532d4ba7abe">
+```java
+public class TrafficLightBruteForce {
+    private enum State {
+        GREEN, YELLOW, RED
+    }
+
+    private State state;
+    private State previousState;
+
+    public TrafficLightBruteForce() {
+        state = State.GREEN;
+        previousState = State.RED; // Initially, we assume it turned green from red
+    }
+
+    public void change() {
+        if (state == State.GREEN) {
+            System.out.println("Green - Go!");
+            previousState = state;
+            state = State.YELLOW;
+        } else if (state == State.YELLOW) {
+            if (previousState == State.GREEN) {
+                System.out.println("Yellow - Prepare to Stop!");
+                state = State.RED;
+            } else if (previousState == State.RED) {
+                System.out.println("Yellow - Prepare to Go!");
+                state = State.GREEN;
+            }
+        } else if (state == State.RED) {
+            System.out.println("Red - Stop!");
+            previousState = state;
+            state = State.YELLOW;
+        }
+    }
+
+    public static void main(String[] args) {
+        TrafficLightBruteForce trafficLight = new TrafficLightBruteForce();
+        trafficLight.change(); // Green - Go!
+        trafficLight.change(); // Yellow - Prepare to Stop!
+        trafficLight.change(); // Red - Stop!
+        trafficLight.change(); // Yellow - Prepare to Go!
+    }
+}
+```
 
 # Singleton
 * useful when you need a single instance of a class, such as a **logger**, or a database connection pool
@@ -463,7 +621,12 @@ When you write code that depends on an interface rather than a specific class, y
 # class types, static, protecged etc...
 
 
-# Adapter pattern
+# Adapter pattern **STRUCTURAL**
+<img width="677" alt="Screenshot 2024-11-11 at 2 17 51 PM" src="https://github.com/user-attachments/assets/ad4b641e-1d67-40b9-a0b6-63d1effb6e78">
+
+* structrual patterns are about altering interfaces and usually involve making "wrappers"
+* makes two classes compatible
+* class B wraps class C, and A -> B instead of A -x-> C
 -basically you use the adapater object instead of the other object, so that you can write custom code to make it work with noncompatible types.
 -aka putting a circle in a square hole (instead of a square)
 -our adapter object acts like an api that implements the intended client interface but with the updated functionality (new payment processor)
@@ -484,14 +647,209 @@ When you write code that depends on an interface rather than a specific class, y
 
 <img width="776" alt="Screenshot 2024-09-01 at 12 25 42 PM" src="https://github.com/user-attachments/assets/49d39411-27fd-41eb-ae64-9bd5e323f7d0">
 
-# Observer pattern
-### pub/sub pattern
+# Decorator Pattern **STRUCTURAL**
+* The Decorator Pattern is a structural design pattern used to add new functionality to an object dynamically without changing its structure. This pattern is particularly useful for adhering to the open/closed principle—where a class is open for extension but closed for modification.
+* uses composition by using an instance of the base class without inheritance
+<img width="664" alt="Screenshot 2024-11-11 at 2 49 25 PM" src="https://github.com/user-attachments/assets/2cf6a305-5bf5-4c8a-ae63-45bed543c04e">
+* wrappers around wrappers is what creates the composition
+<img width="973" alt="Screenshot 2024-11-11 at 2 53 17 PM" src="https://github.com/user-attachments/assets/9848badb-e918-4028-877b-4841a45b7d81">
+* here is a visualization fo the example neetcode gives
+<img width="879" alt="Screenshot 2024-11-11 at 2 57 16 PM" src="https://github.com/user-attachments/assets/e5f03a0d-db92-4ce9-ac18-29b368cf9e0a">
+* Point of Sale Systems - As discussed in our example, point of sale systems can make use of the decorator design pattern to compute the cost of the overall purchase, with discounts and add-ons etc.
+* The Decorator Pattern is primarily used to add or modify behavior dynamically to an existing object without modifying the original class.
+* It is useful when you want to extend or change an object's behavior without creating new subclasses for every combination of features.
+* The Decorator Pattern is about enhancing or modifying the behavior of an object **dynamically at runtime**, allowing you to wrap an object with different layers of decorators.
+* The Builder Pattern is about constructing a complex object step-by-step, with each step configuring a part of the object, resulting in a consistent and final product.
+```java
+// Step 1: Abstract Component
+abstract class Beverage {
+    public abstract double cost();
+    public abstract String description();
+}
 
+// Step 2: Concrete Components
+class LightRoast extends Beverage {
+    @Override
+    public double cost() {
+        return 1.0;
+    }
+
+    @Override
+    public String description() {
+        return "Light Roast Coffee";
+    }
+}
+
+class DarkRoast extends Beverage {
+    @Override
+    public double cost() {
+        return 1.5;
+    }
+
+    @Override
+    public String description() {
+        return "Dark Roast Coffee";
+    }
+}
+
+// Step 3: Abstract Decorator
+abstract class BeverageDecorator extends Beverage {
+    protected Beverage beverage;
+
+    public BeverageDecorator(Beverage beverage) {
+        this.beverage = beverage;
+    }
+
+    @Override
+    public abstract double cost();
+
+    @Override
+    public abstract String description();
+}
+
+// Step 4: Concrete Decorators
+class EspressoDecorator extends BeverageDecorator {
+    public EspressoDecorator(Beverage beverage) {
+        super(beverage);
+    }
+
+    @Override
+    public double cost() {
+        return beverage.cost() + 0.8;
+    }
+
+    @Override
+    public String description() {
+        return beverage.description() + ", Espresso Shot";
+    }
+}
+
+class CreamDecorator extends BeverageDecorator {
+    public CreamDecorator(Beverage beverage) {
+        super(beverage);
+    }
+
+    @Override
+    public double cost() {
+        return beverage.cost() + 0.5;
+    }
+
+    @Override
+    public String description() {
+        return beverage.description() + ", Cream";
+    }
+}
+
+class FoamDecorator extends BeverageDecorator {
+    public FoamDecorator(Beverage beverage) {
+        super(beverage);
+    }
+
+    @Override
+    public double cost() {
+        return beverage.cost() + 0.3;
+    }
+
+    @Override
+    public String description() {
+        return beverage.description() + ", Foam";
+    }
+}
+
+// Step 5: Use the Decorators
+public class Main {
+    public static void main(String[] args) {
+        // Create a basic Light Roast coffee
+        Beverage beverage = new LightRoast();
+        System.out.println(beverage.description() + " $" + beverage.cost());
+
+        // Add Espresso to the beverage
+        beverage = new EspressoDecorator(beverage);
+        System.out.println(beverage.description() + " $" + beverage.cost());
+
+        // Add Cream to the beverage
+        beverage = new CreamDecorator(beverage);
+        System.out.println(beverage.description() + " $" + beverage.cost());
+
+        // Add Foam to the beverage
+        beverage = new FoamDecorator(beverage);
+        System.out.println(beverage.description() + " $" + beverage.cost());
+    }
+}
+```
+* 
+# Observer pattern **BEHAVIORAL**
+<img width="657" alt="Screenshot 2024-11-11 at 4 00 30 PM" src="https://github.com/user-attachments/assets/ee5f7e28-5b6c-4535-8e5c-5bef80d71293">
+
+``` java
+import java.util.ArrayList;
+abstract class Subject {
+
+  abstract void registerObserver(Observer o);
+
+  abstract void removeObserver(Observer o);
+
+  abstract void notifyObservers();
+}
+class ConcreteSubject extends Subject {
+
+  private ArrayList<Observer> observers = new ArrayList<Observer>();
+  private int value = 0;
+
+  @Override
+  public void registerObserver(Observer o) {
+    observers.add(o);
+  }
+
+  @Override
+  public void removeObserver(Observer o) {
+    observers.remove(o);
+  }
+
+  @Override
+  public void notifyObservers() {
+    for (Observer observer : observers) {
+      observer.update(value);
+    }
+  }
+
+  public void setValue(int value) {
+    this.value = value;
+    notifyObservers();
+  }
+}
+interface Observer {
+  public void update(int value);
+}
+class ConcreteObserver implements Observer {
+
+  private int value;
+  private Subject subject;
+
+  public ConcreteObserver(Subject sSub) {
+    subject = sSub;
+    subject.registerObserver(this);
+  }
+
+  @Override
+  public void update(int value) {
+    this.value = value;
+  }
+}
+```
+### pub/sub pattern
+* all about sending notifications
 * one to many relationship with objects
+* **decouples** update classes from their observers
+* Fans out a change from one class to others so other things can happen in those classes
 * When the state of one object (the subject) changes, all of its dependents (called observers) are automatically notified and updated
 * The Observer Pattern is useful in scenarios where you need to maintain consistency across related objects or want to allow multiple components to react to changes in another component's state.
 
 # Facade pattern
+<img width="522" alt="Screenshot 2024-11-11 at 3 12 26 PM" src="https://github.com/user-attachments/assets/b48e4185-c4e2-45ed-b473-c7e7dfd43141">
+* database ORM is an exmample as well
+* **uses composition since it uses an instance of the class its modifying**
+* kinda like my routines, hides implementation
 * The Facade Pattern is a structural design pattern that provides a simplified interface to a complex subsystem. It hides the complexities of the subsystem by exposing a single, unified interface, making the subsystem easier to use and understand for the client.
 * Many libraries have hidden logic the the user is unaware of
 <img width="522" alt="Screenshot 2024-09-01 at 4 00 08 PM" src="https://github.com/user-attachments/assets/41ea2e92-0365-40ca-9a74-9793e77cc65f">
