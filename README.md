@@ -3,6 +3,8 @@
 Be able to describe all of these:
 
 <img width="1048" alt="Screenshot 2024-11-11 at 10 53 35 AM" src="https://github.com/user-attachments/assets/a3f3a9fb-2cbc-4193-ac54-7cbee8d819b6">
+* AND PROTOTYPE for creational
+* AND STATE for behavioral
 
 # Notes for interviews
 * I have been learning about design patterns, but it's important to know WHEN to use them, if you use them willy nilly, you might just be increasing complexity without positive impact
@@ -148,71 +150,9 @@ https://www.youtube.com/watch?v=ub0DXaeV6hA
 
 <img width="680" alt="Screenshot 2024-11-11 at 1 46 43 PM" src="https://github.com/user-attachments/assets/6fbf2256-0028-4416-b75b-90f3a424f08d">
 
-you can also do it like this so you can actually specify starters this way, so 
-* here is another way to do it I found
-* In the earlier approach, we created specialized builders like VeganMealBuilder or HealthyMealBuilder because each of those meals had different rules and constraints.
-* This pizza option doesn't have the strict rules
-```java
-public class Pizza {
-    private final int size;
-    private final boolean cheese;
-    private final boolean pepperoni;
-    private final boolean bacon;
+* we wants precise control over HOW it's built
 
-    private Pizza(Builder builder) {
-        this.size = builder.size;
-        this.cheese = builder.cheese;
-        this.pepperoni = builder.pepperoni;
-        this.bacon = builder.bacon;
-    }
 
-    public static class Builder {
-        private final int size;
-        private boolean cheese = false;
-        private boolean pepperoni = false;
-        private boolean bacon = false;
-
-        public Builder(int size) {
-            this.size = size;
-        }
-
-        public Builder cheese(boolean value) {
-            this.cheese = value;
-            return this;  // Returning the builder instance (this)
-        }
-
-        public Builder pepperoni(boolean value) {
-            this.pepperoni = value;
-            return this;  // Returning the builder instance (this)
-        }
-
-        public Builder bacon(boolean value) {
-            this.bacon = value;
-            return this;  // Returning the builder instance (this)
-        }
-
-        public Pizza build() {
-            return new Pizza(this);
-        }
-    }
-}
-```
-```java
-public class MainApp {
-    public static void main(String[] args) {
-        HealthyMealBuilder builder = new HealthyMealBuilder();
-        
-        // Customizing the meal by passing parameters
-        builder.addStarter(Starter.BRUSCHETTA);
-        builder.addMainCourse(Main.GRILLED_CHICKEN);
-        builder.addDessert(Dessert.ICE_CREAM);
-        builder.addDrink(Drink.FRUIT_JUICE);
-
-        Meal customizedMeal = builder.build();
-        System.out.println("Customized Meal: " + customizedMeal);
-    }
-}
-```
 ```java
 // Enums for Meal Components
 enum Starter { SALAD, SOUP }
@@ -285,6 +225,56 @@ public class MainApp {
 * Each Concrete Builder has a single responsibility—to build a specific type of product (e.g., a specific meal configuration).
 * The Open/Closed Principle states that a class should be open for extension but closed for modification.
 If you need to add a new type of meal, you simply create a new Concrete Builder (e.g., GlutenFreeMealBuilder). You do not need to modify the existing builders. This makes the system more extensible and less prone to errors.
+
+
+* here is another way to do it I found
+#### In the earlier approach, we created specialized builders like VeganMealBuilder or HealthyMealBuilder because each of those meals had different rules and constraints.
+* This pizza option doesn't have the strict rules
+```java
+public class Pizza {
+    private final int size;
+    private final boolean cheese;
+    private final boolean pepperoni;
+    private final boolean bacon;
+
+    private Pizza(Builder builder) {
+        this.size = builder.size;
+        this.cheese = builder.cheese;
+        this.pepperoni = builder.pepperoni;
+        this.bacon = builder.bacon;
+    }
+
+    public static class Builder {
+        private final int size;
+        private boolean cheese = false;
+        private boolean pepperoni = false;
+        private boolean bacon = false;
+
+        public Builder(int size) {
+            this.size = size;
+        }
+
+        public Builder cheese(boolean value) {
+            this.cheese = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Builder pepperoni(boolean value) {
+            this.pepperoni = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Builder bacon(boolean value) {
+            this.bacon = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Pizza build() {
+            return new Pizza(this);
+        }
+    }
+}
+```
 
 <img width="667" alt="Screenshot 2024-09-01 at 11 10 57 AM" src="https://github.com/user-attachments/assets/fe3892a7-f360-4e45-9c5d-733036413011">
 
@@ -537,7 +527,9 @@ class Program
     }
 }
 ```
-# Prototype pattern
+# Prototype pattern **CREATIONAL PATTERN**
+<img width="713" alt="Screenshot 2024-11-11 at 1 59 20 PM" src="https://github.com/user-attachments/assets/20f97388-c858-47f0-a474-8ab7baabde6d">
+* we implement .clone() for the client so they don't have to worry about it
 * The Prototype Pattern is useful in situations where creating new instances of a class is expensive, complex, or requires significant resources. By cloning an existing object (a prototype), you can quickly produce new objects without going through the full creation process.
 *  Use the Prototype pattern when your code shouldn’t depend on the concrete classes of objects that you need to copy.
 *  This happens a lot when your code works with objects passed to you from 3rd-party code via some interface. The concrete classes of these objects are unknown, and you couldn’t depend on them even if you wanted to.
