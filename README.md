@@ -66,9 +66,20 @@ CQRS is simlilar to GraphQL in that they separate the read and writes logic.
 
 
 # Singleton
-* useful when you need a single instance of a class, such as a logger, or a database connection pool
+* useful when you need a single instance of a class, such as a **logger**, or a database connection pool
+* we make the **constructor private** so that we can't do `new Instance = Instance()` we instead use `getInstance()` and it makes a new one ONLY if there isn't one already
+* shared state!
 * need to be careful with concureency (race conditions)
 * here's a good race condition exmaple, they both grab the starting amount, BEFORE thread1 has time to update the new total
+* Some people say it's an **anti-pattern** because it's **rigid** and it uses **global instance** which is hard to track how it changes
+```java
+public static Singleton getInstance() {
+    if (instance == null) {
+        instance = new Singleton();  // Create the instance if it does not exist
+    }
+    return instance;
+}
+```
 ```python
 public class Main {
     public static void main(String[] args) {
@@ -91,6 +102,27 @@ public class Main {
 }
 ```
 # Factory
+```java 
+public class MainApp {
+    public static void main(String[] args) {
+        VehicleFactory carFactory = new CarFactory();
+        Vehicle car = carFactory.createVehicle();
+        System.out.println(car.getType());  // Output: Car
+
+        VehicleFactory bikeFactory = new BikeFactory();
+        Vehicle bike = bikeFactory.createVehicle();
+        System.out.println(bike.getType());  // Output: Bike
+
+        VehicleFactory truckFactory = new TruckFactory();
+        Vehicle truck = truckFactory.createVehicle();
+        System.out.println(truck.getType());  // Output: Truck
+    }
+}
+```
+
+* The Factory Pattern is a creational design pattern used to abstract the process of creating objects, making code more flexible and reusable.
+* Follows Open/Closed principle (we can make new objects without editing our vehicle factory)
+* The reason we do this this way instead of passing in a type is that we can just add new factories code and don't have to change the vehicle factory
 
 <img width="384" alt="Screenshot 2024-09-01 at 10 40 37 AM" src="https://github.com/user-attachments/assets/21b20819-ae48-404f-bb9b-d20dc87f3a21">
 
@@ -103,7 +135,156 @@ https://www.youtube.com/watch?v=ub0DXaeV6hA
 
 - I love this example, it's so we can generate random enemies AT RUNTIME since it can generate any of the classes (as long as they share a superclass)
 
+#### Focus:
+
+* Factory Pattern: Focuses on deciding which subclass to create. It's about polymorphism—choosing among many possible classes.
+* Builder Pattern: Focuses on constructing complex objects step-by-step. It's about assembling an object from multiple components.
+#### Examples:
+
+* Factory Pattern: You want to create different types of Shape objects—Circle, Square, Triangle. The factory determines which to create based on input or context.
+* Builder Pattern: You want to create a House that may have different configurations—Bedrooms, Bathrooms, Garden, Swimming Pool. The builder allows you to add components as needed.
+
 # Builder
+
+<img width="680" alt="Screenshot 2024-11-11 at 1 46 43 PM" src="https://github.com/user-attachments/assets/6fbf2256-0028-4416-b75b-90f3a424f08d">
+
+you can also do it like this so you can actually specify starters this way, so 
+* here is another way to do it I found
+* In the earlier approach, we created specialized builders like VeganMealBuilder or HealthyMealBuilder because each of those meals had different rules and constraints.
+* This pizza option doesn't have the strict rules
+```java
+public class Pizza {
+    private final int size;
+    private final boolean cheese;
+    private final boolean pepperoni;
+    private final boolean bacon;
+
+    private Pizza(Builder builder) {
+        this.size = builder.size;
+        this.cheese = builder.cheese;
+        this.pepperoni = builder.pepperoni;
+        this.bacon = builder.bacon;
+    }
+
+    public static class Builder {
+        private final int size;
+        private boolean cheese = false;
+        private boolean pepperoni = false;
+        private boolean bacon = false;
+
+        public Builder(int size) {
+            this.size = size;
+        }
+
+        public Builder cheese(boolean value) {
+            this.cheese = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Builder pepperoni(boolean value) {
+            this.pepperoni = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Builder bacon(boolean value) {
+            this.bacon = value;
+            return this;  // Returning the builder instance (this)
+        }
+
+        public Pizza build() {
+            return new Pizza(this);
+        }
+    }
+}
+```
+```java
+public class MainApp {
+    public static void main(String[] args) {
+        HealthyMealBuilder builder = new HealthyMealBuilder();
+        
+        // Customizing the meal by passing parameters
+        builder.addStarter(Starter.BRUSCHETTA);
+        builder.addMainCourse(Main.GRILLED_CHICKEN);
+        builder.addDessert(Dessert.ICE_CREAM);
+        builder.addDrink(Drink.FRUIT_JUICE);
+
+        Meal customizedMeal = builder.build();
+        System.out.println("Customized Meal: " + customizedMeal);
+    }
+}
+```
+```java
+// Enums for Meal Components
+enum Starter { SALAD, SOUP }
+enum Main { GRILLED_CHICKEN, PASTA }
+enum Dessert { FRUIT_SALAD, ICE_CREAM }
+enum Drink { WATER, SODA }
+
+// Meal Class
+class Meal {
+    private Starter starter;
+    private Main main;
+    private Dessert dessert;
+    private Drink drink;
+
+    // Setters for each component
+    void setStarter(Starter starter) { this.starter = starter; }
+    void setMain(Main main) { this.main = main; }
+    void setDessert(Dessert dessert) { this.dessert = dessert; }
+    void setDrink(Drink drink) { this.drink = drink; }
+
+    @Override
+    public String toString() {
+        return "Meal: Starter=" + starter + ", Main=" + main + ", Dessert=" + dessert + ", Drink=" + drink;
+    }
+}
+
+// Builder Interface
+interface Builder {
+    void addStarter();
+    void addMainCourse();
+    void addDessert();
+    void addDrink();
+    Meal build();
+}
+
+// VeganMealBuilder Class
+class VeganMealBuilder implements Builder {
+    private Meal meal = new Meal();
+
+    @Override public void addStarter() { meal.setStarter(Starter.SALAD); }
+    @Override public void addMainCourse() { meal.setMain(Main.PASTA); }
+    @Override public void addDessert() { meal.setDessert(Dessert.FRUIT_SALAD); }
+    @Override public void addDrink() { meal.setDrink(Drink.WATER); }
+    @Override public Meal build() { return meal; }
+}
+
+// Director Class
+class Director {
+    void constructMeal(Builder builder) {
+        builder.addStarter();
+        builder.addMainCourse();
+        builder.addDessert();
+        builder.addDrink();
+    }
+}
+
+// Client Code
+public class MainApp {
+    public static void main(String[] args) {
+        Director director = new Director();
+        Builder veganBuilder = new VeganMealBuilder();
+        director.constructMeal(veganBuilder);
+        Meal veganMeal = veganBuilder.build();
+        System.out.println(veganMeal);
+    }
+}
+```
+* we add then return the object eventually
+* The Builder Pattern is used to construct complex objects step-by-step.
+* Each Concrete Builder has a single responsibility—to build a specific type of product (e.g., a specific meal configuration).
+* The Open/Closed Principle states that a class should be open for extension but closed for modification.
+If you need to add a new type of meal, you simply create a new Concrete Builder (e.g., GlutenFreeMealBuilder). You do not need to modify the existing builders. This makes the system more extensible and less prone to errors.
 
 <img width="667" alt="Screenshot 2024-09-01 at 11 10 57 AM" src="https://github.com/user-attachments/assets/fe3892a7-f360-4e45-9c5d-733036413011">
 
