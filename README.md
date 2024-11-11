@@ -1,5 +1,9 @@
 # design-patterns-oop-notes
 
+Be able to describe all of these:
+
+<img width="1048" alt="Screenshot 2024-11-11 at 10 53 35 AM" src="https://github.com/user-attachments/assets/a3f3a9fb-2cbc-4193-ac54-7cbee8d819b6">
+
 # Notes for interviews
 * I have been learning about design patterns, but it's important to know WHEN to use them, if you use them willy nilly, you might just be increasing complexity without positive impact
 * i feel like in general, as projects become larger in scale design patterns become a lot more worth it
