@@ -180,13 +180,27 @@ public class Dog : Animal
 }
 ```
 
+
+
+## Abstraction:
+
+Definition: Simplifying complex systems by modeling classes appropriate to the problem, focusing on essential characteristics while hiding unnecessary details.
+
+Purpose: To reduce complexity by exposing only the relevant attributes and behaviors of an object.
+Key Benefit: Makes the code easier to use and understand by highlighting what an object does rather than how it does it.
+
 # Abstraction
 
 * Abstraction is the process of hiding the complex implementation details of a system and showing only the essential features or functionalities to the user. It focuses on exposing only the relevant parts of an object or class while keeping the rest hidden.
 
 * ***Interfaces and Abstract Classes:*** In OOP, abstraction is often achieved using interfaces and abstract classes. These allow you to define a contract or blueprint that classes must follow without specifying the implementation details.
 
+## Encapsulation:
 
+Definition: Bundling data and methods that operate on the data into a single unit (class) and restricting direct access to some of an object’s components.
+
+Purpose: To hide the internal state of an object and only expose a controlled interface to interact with it.
+Key Benefit: Provides data protection and controlled access through getters and setters.
 
 # Encapsulation
 
