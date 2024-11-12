@@ -69,8 +69,10 @@ CQRS is simlilar to GraphQL in that they separate the read and writes logic.
 # Strategy Pattern **BEHAVIORAL**
 * The Strategy Pattern is a behavioral design pattern that allows you to define a family of algorithms or behaviors, put each of them in a separate class, and make their objects interchangeable.
 <img width="883" alt="Screenshot 2024-11-11 at 3 26 08 PM" src="https://github.com/user-attachments/assets/308ce014-b065-416d-87dc-08c96f65d130">
+
 * we don't want to copy "sliding lock" logic for every type of door that uses a sliding lock
 * we want to reuse the logic and pass it into those classes
+* 
 #### without lambdas
 ```java
 // Strategy Interface
@@ -120,6 +122,7 @@ public class StrategyPatternClasses {
     }
 }
 ```
+
 #### with lambdas
 ```java
 import java.util.function.Consumer;
@@ -181,47 +184,96 @@ public class StrategyPatternLambdaRefactored {
 * break down complicated logic (more complicated than traffic lights)
 *
 * <img width="458" alt="Screenshot 2024-11-11 at 4 11 44 PM" src="https://github.com/user-attachments/assets/8ae61421-e1bc-4163-9c35-b532d4ba7abe">
+
 ```java
-public class TrafficLightBruteForce {
-    private enum State {
-        GREEN, YELLOW, RED
-    }
+/**
+ * State
+ */
+interface TrafficLightState {
+  void changeState(TrafficLight trafficLight);
+}
+/**
+ * Concrete State
+ */
+class GreenState implements TrafficLightState {
 
-    private State state;
-    private State previousState;
+  @Override
+  public void changeState(TrafficLight light) {
+    System.out.println("Green - go!");
+    light.setState(new YellowState());
+  }
+}
 
-    public TrafficLightBruteForce() {
-        state = State.GREEN;
-        previousState = State.RED; // Initially, we assume it turned green from red
-    }
+/**
+ * Concrete State
+ */
+class YellowState implements TrafficLightState {
 
-    public void change() {
-        if (state == State.GREEN) {
-            System.out.println("Green - Go!");
-            previousState = state;
-            state = State.YELLOW;
-        } else if (state == State.YELLOW) {
-            if (previousState == State.GREEN) {
-                System.out.println("Yellow - Prepare to Stop!");
-                state = State.RED;
-            } else if (previousState == State.RED) {
-                System.out.println("Yellow - Prepare to Go!");
-                state = State.GREEN;
-            }
-        } else if (state == State.RED) {
-            System.out.println("Red - Stop!");
-            previousState = state;
-            state = State.YELLOW;
-        }
+  @Override
+  public void changeState(TrafficLight light) {
+    if (light.getPrevState() instanceof RedState) {
+      System.out.println("Yellow (from Red to Green) - caution!");
+      light.setState(new GreenState());
+    } else {
+      System.out.println("Yellow (from Green to Red) - caution!");
+      light.setState(new RedState());
     }
+  }
+}
+/**
+ * Concrete State
+ */
+class RedState implements TrafficLightState {
 
-    public static void main(String[] args) {
-        TrafficLightBruteForce trafficLight = new TrafficLightBruteForce();
-        trafficLight.change(); // Green - Go!
-        trafficLight.change(); // Yellow - Prepare to Stop!
-        trafficLight.change(); // Red - Stop!
-        trafficLight.change(); // Yellow - Prepare to Go!
-    }
+  @Override
+  public void changeState(TrafficLight light) {
+    System.out.println("Red - Stop!");
+    light.setState(new YellowState());
+  }
+}
+/**
+ * Context
+ */
+
+class TrafficLight {
+
+  private TrafficLightState state;
+  private TrafficLightState prevState;
+
+  TrafficLight() {
+    this.state = new RedState();
+    this.prevState = null;
+  }
+
+  void setState(TrafficLightState state) {
+    this.prevState = this.state;
+    this.state = state;
+  }
+
+  TrafficLightState getPrevState() {
+    return this.prevState;
+  }
+
+  void change() {
+    this.state.changeState(this);
+  }
+}
+/**
+ * Client class
+ */
+public class Client {
+
+  public static void main(String[] args) {
+    TrafficLight lightSystem = new TrafficLight();
+
+    lightSystem.change(); // Red - Stop!
+    lightSystem.change(); // Yellow (from Red to Green) - caution!
+    lightSystem.change(); // Green - go!
+    lightSystem.change(); // Yellow (from Green to Red) - caution!
+    lightSystem.change(); // Red - Stop!
+    lightSystem.change(); // Yellow (from Red to Green) - caution!
+    lightSystem.change(); // Green - go!
+  }
 }
 ```
 
@@ -232,6 +284,7 @@ public class TrafficLightBruteForce {
 * need to be careful with concureency (race conditions)
 * here's a good race condition exmaple, they both grab the starting amount, BEFORE thread1 has time to update the new total
 * Some people say it's an **anti-pattern** because it's **rigid** and it uses **global instance** which is hard to track how it changes
+  
 ```java
 public static Singleton getInstance() {
     if (instance == null) {
@@ -433,6 +486,14 @@ public class Pizza {
     }
 }
 ```
+```
+Pizza pizza = new Pizza.Builder(12)
+                       .cheese(true)
+                       .pepperoni(true)
+                       .bacon(false)
+                       .build();
+
+```
 
 <img width="667" alt="Screenshot 2024-09-01 at 11 10 57 AM" src="https://github.com/user-attachments/assets/fe3892a7-f360-4e45-9c5d-733036413011">
 
@@ -445,6 +506,22 @@ public class Pizza {
 # Polymorphism 
 
 Polymorphism is a core concept in object-oriented programming (OOP) that allows objects of different types to be treated as objects of a common super type. It enables a single function, method, or operator to perform different tasks based on the context or the input.
+* Polymorphism is about objects, allowing objects of different derived types to be treated as if they are objects of a common base type.
+```java
+class Animal {
+    void makeSound() { System.out.println("Some sound"); }
+}
+
+class Dog extends Animal {
+    @Override
+    void makeSound() { System.out.println("Bark"); }
+}
+
+class Cat extends Animal {
+    @Override
+    void makeSound() { System.out.println("Meow"); }
+}
+```
 
 There are two main types of polymorphism in OOP:
 
