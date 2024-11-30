@@ -1227,6 +1227,11 @@ public class Program
 
 * This is a good example where inheritance breaks down, line and circle add problems for subclasses, lines don't have width, so we have fields in line class that aren't used. A line might have an angle property as well, and we don't want it in the base class since it wont' be used by other shapes
 * We want to avoid these complex inheritance chains for somewhat related classes, while still reusing code
+
+* **lines DONT have an area, so we either need to implement an area for ALL of the subclasses, or we need to have line NOT comply with the interface**
+* If we keep moving the logic to individual subclasses, it can get excessive, so composition might make more sense
+* same with a circle not having an angle, obviuosly we could set these 0 by default, but there are circumstances where copmosition makes more sense
+* lines aren't clickable so are we going to do that in every subclass?
 <img width="756" alt="Screenshot 2024-09-01 at 4 56 59 PM" src="https://github.com/user-attachments/assets/3dac5596-e3c6-4c8a-8d24-ca9a7f9d4e9d">
 <img width="656" alt="Screenshot 2024-09-01 at 5 00 14 PM" src="https://github.com/user-attachments/assets/f96212c3-7733-4740-b596-ca9285a5bb80">
 
